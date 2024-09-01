@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An error logger made with NodeJs",
   "main": "index.mjs",
-  "repository": "git@github.com:aht-wtag/nodeJs-logger.git",
+  "repository": "git@github.com:aht-wtag/node-js-logger.git",
   "author": "Tahsin Ahmed",
   "license": "MIT",
   "private": false,
