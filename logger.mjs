@@ -11,19 +11,26 @@ export const log = (options) => {
     const error = options.error ?? null ;
 
     writeToConsole(levelName, message, error)
-    if(config.levels[levelName].writeAccess) {
-        writeToFile(levelName, message);
-    }
 }
 
 const writeToConsole = (levelName, message, error= null) => {
     const level = config.levels[levelName];
     let chalkFunc = null;
 
-    chalkFunc = chalk[level.color]
+    chalkFunc = chalk[level.color];
+
+    message = error ? `${chalkFunc(`${error.message} \n ${error.stack}`)}` : message;
+
+    const header = `[${levelName.toUpperCase()}] [${dateFormat()}]`;
+
+    console.log(`[${chalkFunc(header)}] : [${message}]`);
 
 }
 
 const getLevelName = (level) => {
     return level && config.levels.hasOwnProperty(level) ? level : 'info';
+}
+
+const dateFormat = () => {
+    return new moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS);
 }
