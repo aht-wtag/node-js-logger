@@ -1,9 +1,10 @@
-import path from 'path'
+import path, { resolve } from 'path'
 import chalk from 'chalk'
 import moment from 'moment'
-import { existsSync, mkdirSync, appendFileSync, createReadStream, write } from 'fs'
+import { existsSync, mkdirSync, appendFileSync, createReadStream, write, ReadStream, fstat } from 'fs'
 import config from './config.mjs'
 import readLine from 'readline'
+import { error } from 'console'
 
 export const log = (options) => {
     const levelName = getLevelName(options.level);
@@ -44,6 +45,37 @@ const writeToFile = (level, message) => {
     }
 
     appendFileSync(`./logs/${level}.log`,logData, options);
+}
+
+
+export const readLogs = async(fileName = null)=> {
+    const logDirectory = "./logs";
+
+    return new Promise((resolve, reject) => {
+        const file = path.join(logDirectory, fileName.includes(".log")? fileName : `${fileName}.log`);
+
+        const lineReader = readLine.createInterface({input: createReadStream(file)});
+        const logs = [];
+
+        lineReader.on('line', (line) => {
+
+            logs.push(JSON.parse(line));
+            console.log(logs);
+
+        })
+
+        lineReader.on('close', ()=>{
+            console.log(chalk.yellow(`${fileName} has been accessed`));
+            console.table(logs);
+        })
+        
+
+        resolve(logs);
+
+        lineReader.on('error', (error) => {
+            reject(error);
+        })
+    })
 }
 
 const getLevelName = (level) => {
