@@ -60,17 +60,15 @@ export const readLogs = async(fileName = null)=> {
         lineReader.on('line', (line) => {
 
             logs.push(JSON.parse(line));
-            console.log(logs);
 
         })
 
         lineReader.on('close', ()=>{
             console.log(chalk.yellow(`${fileName} has been accessed`));
             console.table(logs);
+            resolve(logs);
         })
-        
 
-        resolve(logs);
 
         lineReader.on('error', (error) => {
             reject(error);
